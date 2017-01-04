@@ -17,6 +17,17 @@ app.get('/', function(req, res) {
   res.render('home');
 });
 
+app.get('/links/all/', function(req,res) {
+    console.log('I should be finding all things');
+    db.link.findAll({
+    order: [
+      ['count', 'DESC']
+    ]
+  }).then(function(links){
+    res.render('all',{links:links});
+  });
+});
+
 app.post('/links', function(req,res){
   db.link.create(req.body).then(function(link){
     res.redirect('/links/'+link.id);
@@ -34,19 +45,19 @@ app.get('/links/:id', function(req,res){
   });
 });
 
+
 app.get('/:hash', function(req,res){
   var hash = hashids.decode(req.params.hash);
   db.link.find({
     where: {id: hash},
   })
   .then(function(link){
-    console.log(link);
-    link.increment("count");
+    link.increment('count');
     res.redirect(link.url);
   });
 });
 
 
-var server = app.listen(process.env.PORT || 3001);
 
+var server = app.listen(process.env.PORT || 3001);
 module.exports = server;
