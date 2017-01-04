@@ -35,13 +35,13 @@ app.get('/links/:id', function(req,res){
 });
 
 app.get('/:hash', function(req,res){
-  console.log(req.params.hash);
   var hash = hashids.decode(req.params.hash);
-  console.log("decoded has is "+hash);
   db.link.find({
     where: {id: hash},
   })
   .then(function(link){
+    console.log(link);
+    link.increment("count");
     res.redirect(link.url);
   });
 });
